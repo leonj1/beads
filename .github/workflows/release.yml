@@ -17,7 +17,7 @@ jobs:
   goreleaser:
     # Guard: only run goreleaser in the canonical repository (not in forks)
     if: ${{ github.repository == 'steveyegge/beads' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -49,7 +49,7 @@ jobs:
           WINDOWS_SIGNING_CERT_PASSWORD: ${{ secrets.WINDOWS_SIGNING_CERT_PASSWORD }}
 
   publish-pypi:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: goreleaser
     if: ${{ always() && github.repository == 'steveyegge/beads' }}
     steps:
@@ -78,7 +78,7 @@ jobs:
           uv tool run twine upload dist/*
 
   publish-npm:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: goreleaser
     if: ${{ github.repository == 'steveyegge/beads' }}
     permissions:
@@ -105,7 +105,7 @@ jobs:
           # Provenance attestations are automatic with trusted publishing
 
   update-homebrew:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     needs: goreleaser
     if: ${{ github.repository == 'steveyegge/beads' }}
     steps:

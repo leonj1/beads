@@ -10,7 +10,7 @@ jobs:
   # Fast check to ensure all version files are in sync
   check-version-consistency:
     name: Check version consistency
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     steps:
       - uses: actions/checkout@v6
 
@@ -20,7 +20,7 @@ jobs:
   # Fast check to catch accidental .beads/issues.jsonl changes from contributors
   check-no-beads-changes:
     name: Check for .beads changes
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v6
@@ -46,7 +46,7 @@ jobs:
   # Cross-platform test matrix (Linux/macOS only - Windows uses smoke tests)
   test:
     name: Test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    runs-on: "${{ (matrix.os) == 'ubuntu-latest' && fromJSON('[\"self-hosted\",\"linux\",\"x64\"]') || (matrix.os) == 'macos-latest' && fromJSON('[\"self-hosted\",\"macOS\",\"ARM64\"]') || (matrix.os) }}"
     strategy:
       fail-fast: false
       matrix:
@@ -106,7 +106,7 @@ jobs:
   # Linux/macOS run comprehensive tests; Windows just verifies binary works
   test-windows:
     name: Test (Windows - smoke)
-    runs-on: windows-latest
+    runs-on: [self-hosted, windows, x64]
     steps:
       - uses: actions/checkout@v6
 
@@ -140,7 +140,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     steps:
       - uses: actions/checkout@v6
 
@@ -157,7 +157,7 @@ jobs:
 
   test-nix:
     name: Test Nix Flake
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     steps:
       - uses: actions/checkout@v6
       - uses: cachix/install-nix-action@v31
